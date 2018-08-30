@@ -1,0 +1,27 @@
+---
+- name: simple flat playbook for webserver 
+  hosts: webservers
+  
+  tasks:
+  - name: install apache
+    yum:
+      name: httpd
+      state: latest
+  - name: start apache
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: enable http port (80)
+    firewalld:
+      port: 80/tcp
+      state: enabled
+      permanent: true
+    notify: restart firewall
+
+  handlers:
+  - name: restart firewall
+    service:
+      name: firewalld
+      state: restarted
+...

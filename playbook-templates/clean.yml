@@ -1,0 +1,66 @@
+---
+- name: simple flat playbook to remove webserver
+  hosts: webservers
+  
+  vars:
+    - webadmin_user: webmaster
+
+  tasks:
+  - name: stop apache
+    ignore_errors: true
+    service:
+      name: httpd
+      state: stopped
+      enabled: no
+  - name: disable http port (80)
+    firewalld:
+      port: 80/tcp
+      state: disabled
+      permanent: true 
+    notify: restart firewall
+  - name: remove apache
+    yum:
+      name: httpd
+      state: absent
+
+  - name: remove webadmin user {{ webadmin_user }}
+    user:
+      name: "{{ webadmin_user }}"
+      state: absent
+
+  - name: stop ntp
+    ignore_errors: true
+    service: 
+      name: ntpd
+      state: stopped
+      enabled: no
+
+  - name: remove common packages, except python
+    yum:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - php
+      - ntp
+
+  - name: remove ntp config file
+    file:
+      path: /etc/ntp.conf
+      state: absent
+
+  - name: remove httpd config file
+    file:
+      path: /etc/httpd/conf/httpd.conf
+      state: absent
+
+  - name: remove html file
+    file:
+      path: /var/www/html/index.html
+      state: absent
+
+  handlers:
+  - name: restart firewall
+    service:
+      name: firewalld
+      state: restarted
+...

@@ -1,0 +1,35 @@
+---
+- name: simple flat playbook to remove webserver
+  hosts: webservers
+  
+  vars:
+    - webadmin_user: webmaster
+
+  tasks:
+  - name: stop apache
+    ignore_errors: true
+    service:
+      name: httpd
+      state: stopped
+      enabled: no
+  - name: disable http port (80)
+    firewalld:
+      port: 80/tcp
+      state: disabled
+      permanent: true 
+    notify: restart firewall
+  - name: remove apache
+    yum:
+      name: httpd
+      state: absent
+  - name: remove webadmin user {{ webadmin_user }}
+    user:
+      name: "{{ webadmin_user }}"
+      state: absent
+
+  handlers:
+  - name: restart firewall
+    service:
+      name: firewalld
+      state: restarted
+...

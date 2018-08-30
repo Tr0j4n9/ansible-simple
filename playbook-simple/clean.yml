@@ -1,0 +1,28 @@
+---
+- name: simple flat playbook to remove webserver
+  hosts: webservers
+  
+  tasks:
+  - name: stop apache
+    ignore_errors: true
+    service:
+      name: httpd
+      state: stopped
+      enabled: no
+  - name: disable http port (80)
+    firewalld:
+      port: 80/tcp
+      state: disabled
+      permanent: true 
+    notify: restart firewall
+  - name: remove apache
+    yum:
+      name: httpd
+      state: absent
+
+  handlers:
+  - name: restart firewall
+    service:
+      name: firewalld
+      state: restarted
+...
