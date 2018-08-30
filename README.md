@@ -6,3 +6,4 @@ List of directories:
 - playbook-vars: we introduce vars and tags
 - playbook-tmplates: we practice template usage and loops
 - playbook-roles: tidying up the playbook with reusable roles
+- playbook-debug: debug examples

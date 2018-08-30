@@ -1,8 +1,9 @@
 ---
-- name: simple flat playbook to remove webserver
+- name: simple playbook to remove webserver
   hosts: webservers
   
   vars:
+    - http_port: 80
     - webadmin_user: webmaster
 
   tasks:
@@ -12,9 +13,9 @@
       name: httpd
       state: stopped
       enabled: no
-  - name: disable http port (80)
+  - name: disable http port {{ http_port }} 
     firewalld:
-      port: 80/tcp
+      port: "{{ http_port }}/tcp"
       state: disabled
       permanent: true 
     notify: restart firewall

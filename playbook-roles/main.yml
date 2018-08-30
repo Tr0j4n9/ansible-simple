@@ -1,0 +1,12 @@
+---
+- name: simple playbook with roles 
+  hosts: webservers
+
+  roles:
+  # Leave default roles variables
+  #- common
+  #- apache
+  # Override some default roles variables
+  - { name: common, ntpserver: 0.nz.pool.ntp.org }
+  - { name: apache, http_port: 8080, webadmin_password: redhat, apache_test_message: "I understand roles now" }
+...

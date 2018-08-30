@@ -1,0 +1,8 @@
+---
+- name: simple playbook with roles to remove webserver
+  hosts: webservers
+  
+  roles:
+    - { name: clean, webadmin_user: webmaster }
+    - { name: clean, http_port: 8080, webadmin_user: webmaster }
+...

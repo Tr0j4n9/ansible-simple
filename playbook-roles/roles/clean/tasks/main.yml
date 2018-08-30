@@ -1,0 +1,52 @@
+---
+- name: stop services
+  ignore_errors: true
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items:
+    - httpd
+    - ntpd
+
+- name: remove packages, except python (red hat)
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - httpd
+    - ntpd
+    - php
+  when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7")
+
+- name: remove packages, except python (ubuntu)
+  apt:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - httpd
+    - ntpd
+    - php
+  when: ansible_distribution == "Ubuntu" 
+
+- name: disable http port {{ http_port }} 
+  firewalld:
+    port: "{{ http_port }}/tcp"
+    state: disabled
+    permanent: true 
+  notify: restart firewall
+
+- name: remove webadmin user {{ webadmin_user }}
+  user:
+    name: "{{ webadmin_user }}"
+    state: absent
+
+- name: remove ntp config files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/ntp.conf
+    - /etc/httpd/conf/httpd.conf
+    - /var/www/html/index.html
+...

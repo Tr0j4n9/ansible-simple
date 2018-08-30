@@ -1,0 +1,20 @@
+---
+- name: playbook for debug examples
+  hosts: webservers
+
+  tasks:
+  - debug:
+      msg: "Hello, it's meee..."
+  - debug:
+      var: "{{ inventory_hostname }}"
+  - debug:
+      msg: "Looks like this machine's OS is {{ ansible_distribution }}"
+
+  - name: listing a directory /etc/yum
+    command: "ls -l /etc/yum"
+    register: diroutput
+
+  - name: get the list output with debug
+    debug:
+      var: diroutput.stdout_lines
+...

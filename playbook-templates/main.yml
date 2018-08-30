@@ -1,5 +1,5 @@
 ---
-- name: simple flat playbook for webserver with vars
+- name: simple playbook with templates for webserver
   hosts: webservers
 
   vars:
@@ -38,7 +38,7 @@
     tags:
       - http 
 
-  - name: enable http port (80)
+  - name: enable http port {{ http_port }}
     firewalld:
       port: "{{ http_port }}/tcp"
       state: enabled

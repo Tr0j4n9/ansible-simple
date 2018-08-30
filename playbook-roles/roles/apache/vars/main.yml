@@ -1,0 +1,6 @@
+http_port: 80
+webadmin_name: webmaster
+webadmin_password: webmaster
+webadmin_group: root
+apache_test_message: This is Spar.. Apache!!
+apache_max_keep_alive_requests: 115
