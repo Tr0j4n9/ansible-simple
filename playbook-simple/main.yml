@@ -1,6 +1,6 @@
 ---
-- name: simple flat playbook for webserver 
-  hosts: webservers
+- name: Install Apache2 on your servers
+  hosts: servers
   
   tasks:
   - name: install apache
